@@ -71,15 +71,15 @@ type ListAdapter interface {
 	// Calling get config should return the configuration for the list. It should not produce any side effects
 	GetConfig() ListConfig
 	// Calling claim bot should claim the bot if it is present but not add the bot if not
-	ClaimBot(adp *ListAdapter, bot *Bot) error
+	ClaimBot(bot *Bot) error
 	// Calling unclaim bot should unclaim the bot if it is present but not add the bot if not
-	UnclaimBot(adp *ListAdapter, bot *Bot) error
+	UnclaimBot(bot *Bot) error
 	// Calling approve bot should approve the bot if it is not present and should add the bot if it is
-	ApproveBot(adp *ListAdapter, bot *Bot) error
+	ApproveBot(bot *Bot) error
 	// Calling deny bot should deny the bot if it is present but not add the bot if not
-	DenyBot(adp *ListAdapter, bot *Bot) error
+	DenyBot(bot *Bot) error
 	// Upcoming: calling data deletion request should delete the bot and all associated information
-	DataDelete(adp *ListAdapter, id string) error
+	DataDelete(id string) error
 	// Upcoming: calling data request should return the bot and all associated information as a map
-	DataRequest(adp *ListAdapter, id string) (map[string]interface{}, error)
+	DataRequest(id string) (map[string]interface{}, error)
 }

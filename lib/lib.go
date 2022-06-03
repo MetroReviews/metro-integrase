@@ -35,9 +35,9 @@ func authReq(r *http.Request, cfg types.ListConfig) bool {
 	return true
 }
 
-type ListFunction func(adp *types.ListAdapter, bot *types.Bot) error
+type ListFunction func(bot *types.Bot) error
 
-func coreHandler(fn ListFunction, adp types.ListAdapter, cfg types.ListConfig) func(w http.ResponseWriter, r *http.Request) {
+func coreHandler(fn ListFunction, cfg types.ListConfig) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if !authReq(r, cfg) {
 			w.WriteHeader(http.StatusUnauthorized)
@@ -68,7 +68,7 @@ func coreHandler(fn ListFunction, adp types.ListAdapter, cfg types.ListConfig) f
 			return
 		}
 
-		adpErr := fn(&adp, &bot)
+		adpErr := fn(&bot)
 
 		if adpErr != nil {
 			w.WriteHeader(http.StatusBadRequest)
@@ -156,10 +156,10 @@ func StartServer(adp types.ListAdapter) {
 		panic("Secret Key not set")
 	}
 
-	http.HandleFunc("/claim", coreHandler(adp.ClaimBot, adp, cfg))
-	http.HandleFunc("/unclaim", coreHandler(adp.UnclaimBot, adp, cfg))
-	http.HandleFunc("/approve", coreHandler(adp.ApproveBot, adp, cfg))
-	http.HandleFunc("/deny", coreHandler(adp.DenyBot, adp, cfg))
+	http.HandleFunc("/claim", coreHandler(adp.ClaimBot, cfg))
+	http.HandleFunc("/unclaim", coreHandler(adp.UnclaimBot, cfg))
+	http.HandleFunc("/approve", coreHandler(adp.ApproveBot, cfg))
+	http.HandleFunc("/deny", coreHandler(adp.DenyBot, cfg))
 	http.HandleFunc("/data-request", func(w http.ResponseWriter, r *http.Request) {
 		if !authReq(r, cfg) {
 			w.WriteHeader(http.StatusUnauthorized)
@@ -175,7 +175,7 @@ func StartServer(adp types.ListAdapter) {
 			return
 		}
 
-		bot, err := adp.DataRequest(&adp, botId)
+		bot, err := adp.DataRequest(botId)
 
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
@@ -213,7 +213,7 @@ func StartServer(adp types.ListAdapter) {
 			return
 		}
 
-		err := adp.DataDelete(&adp, botId)
+		err := adp.DataDelete(botId)
 
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
