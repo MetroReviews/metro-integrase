@@ -101,7 +101,7 @@ func PatchList(cfg types.ListConfig, data types.ListPatch) (*types.ListPatchResp
 
 	client := &http.Client{Timeout: 20 * time.Second}
 
-	req, err := http.NewRequest("PATCH", types.APIUrl+"/list?list_id=s"+cfg.ListID, bytes.NewBuffer(payload))
+	req, err := http.NewRequest("PATCH", types.APIUrl+"/lists?list_id="+cfg.ListID, bytes.NewBuffer(payload))
 
 	if err != nil && cfg.RequestLogs {
 		log.Error("PatchList error (in making new request):", err)
