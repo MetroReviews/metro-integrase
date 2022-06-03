@@ -39,9 +39,18 @@ type ListFunction func(bot *types.Bot) error
 
 func coreHandler(fn ListFunction, cfg types.ListConfig) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "POST" {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+			w.Write([]byte("Method not allowed"))
+			return
+		}
+
+		log.Info("Got request: ", r.URL.Path)
+
 		if !authReq(r, cfg) {
 			w.WriteHeader(http.StatusUnauthorized)
 			w.Write([]byte("Unauthorized"))
+			log.Warning("Unauthorized request: ", r.URL.Path)
 			return
 		}
 
@@ -49,10 +58,10 @@ func coreHandler(fn ListFunction, cfg types.ListConfig) func(w http.ResponseWrit
 
 		if err != nil {
 			if cfg.RequestLogs {
-				log.Error(err)
+				log.Error(err, " at URL ", r.URL.Path)
 			}
 			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte("Bad Request. See logs for more information if you have them enabled"))
+			w.Write([]byte("Bad Request. See logs for more information if you have them enabled:"))
 			return
 		}
 
@@ -61,7 +70,7 @@ func coreHandler(fn ListFunction, cfg types.ListConfig) func(w http.ResponseWrit
 
 		if err != nil {
 			if cfg.RequestLogs {
-				log.Error(err)
+				log.Error(err, " at URL ", r.URL.Path)
 			}
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte("Serialization error occured. See logs for more information if you have them enabled"))
