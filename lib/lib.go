@@ -240,7 +240,12 @@ func StartServer(adp types.ListAdapter) {
 		}
 
 		patched, err := PatchList(cfg, types.ListPatch{
-			ClaimBotAPI: "/claim",
+			ClaimBotAPI:     cfg.DomainName + "/claim",
+			UnclaimBotAPI:   cfg.DomainName + "/unclaim",
+			ApproveBotAPI:   cfg.DomainName + "/approve",
+			DenyBotAPI:      cfg.DomainName + "/deny",
+			DataRequestAPI:  cfg.DomainName + "/data-request",
+			DataDeletionAPI: cfg.DomainName + "/data-delete",
 		})
 
 		if err != nil {
@@ -259,5 +264,9 @@ func StartServer(adp types.ListAdapter) {
 		log.Info("Integrase server now going to start listening on address ", cfg.BindAddr)
 	}
 
-	http.ListenAndServe(cfg.BindAddr, nil)
+	err := http.ListenAndServe(cfg.BindAddr, nil)
+
+	if err != nil {
+		log.Error("Integrase server error: ", err)
+	}
 }
