@@ -235,14 +235,18 @@ func StartServer(adp types.ListAdapter) {
 		})
 
 		if err != nil {
-			log.Error("Metro Reviews update failed:", err)
+			log.Error("Metro Reviews update failed: ", err)
 		}
 
-		log.Info("Metro Reviews update successful with", patched.HasUpdated, "updated")
+		log.Info("Metro Reviews update successful with ", patched.HasUpdated, " updated")
+	}
+
+	if cfg.BindAddr == "" {
+		cfg.BindAddr = ":8080"
 	}
 
 	if cfg.StartupLogs {
-		log.Info("Integrase server now going to start listening on", cfg.BindAddr)
+		log.Info("Integrase server now going to start listening on address ", cfg.BindAddr)
 	}
 
 	http.ListenAndServe(cfg.BindAddr, nil)
