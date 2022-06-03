@@ -101,7 +101,7 @@ func PatchList(cfg types.ListConfig, data types.ListPatch) (*types.ListPatchResp
 
 	client := &http.Client{Timeout: 20 * time.Second}
 
-	req, err := http.NewRequest("PATCH", types.APIUrl+"/lists"+cfg.ListID, bytes.NewBuffer(payload))
+	req, err := http.NewRequest("PATCH", types.APIUrl+"/list?list_id=s"+cfg.ListID, bytes.NewBuffer(payload))
 
 	if err != nil && cfg.RequestLogs {
 		log.Error("PatchList error (in making new request):", err)
@@ -245,9 +245,10 @@ func StartServer(adp types.ListAdapter) {
 
 		if err != nil {
 			log.Error("Metro Reviews update failed: ", err)
-		}
 
-		log.Info("Metro Reviews update successful with ", patched.HasUpdated, " updated")
+		} else {
+			log.Info("Metro Reviews update successful with ", patched.HasUpdated, " updated")
+		}
 	}
 
 	if cfg.BindAddr == "" {
