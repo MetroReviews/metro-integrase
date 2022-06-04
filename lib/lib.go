@@ -154,7 +154,7 @@ func PatchList(cfg types.ListConfig, data types.ListPatch) (*types.ListPatchResp
 type Router interface {
 	HandleFunc(path string, fn func(w http.ResponseWriter, r *http.Request))
 	ListenAndServe(addr string, handler http.Handler) error
-	ServeHTTP(ResponseWriter, *Request)
+	ServeHTTP(http.ResponseWriter, *http.Request)
 }
 
 // Starts a web server handling all core integrase functions
