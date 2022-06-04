@@ -152,7 +152,7 @@ func PatchList(cfg types.ListConfig, data types.ListPatch) (*types.ListPatchResp
 }
 
 type Router interface {
-	HandleFunc(path string, fn func(w http.ResponseWriter, r *http.Request)) any
+	HandleFunc(path string, f func(http.ResponseWriter, *http.Request)) any
 	ListenAndServe(addr string, handler http.Handler) error
 	ServeHTTP(http.ResponseWriter, *http.Request)
 }
