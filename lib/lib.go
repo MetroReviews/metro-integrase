@@ -151,8 +151,14 @@ func PatchList(cfg types.ListConfig, data types.ListPatch) (*types.ListPatchResp
 	}
 }
 
+type Router interface {
+	HandleFunc(path string, fn func(w http.ResponseWriter, r *http.Request))
+	ListenAndServe(addr string, handler http.Handler) error
+	ServeHTTP(ResponseWriter, *Request)
+}
+
 // Starts a web server handling all core integrase functions
-func StartServer(adp types.ListAdapter) {
+func StartServer(adp types.ListAdapter, r Router) {
 	cfg := adp.GetConfig()
 
 	if cfg.StartupLogs {
@@ -165,11 +171,11 @@ func StartServer(adp types.ListAdapter) {
 		panic("Secret Key not set")
 	}
 
-	http.HandleFunc("/claim", coreHandler(adp.ClaimBot, cfg))
-	http.HandleFunc("/unclaim", coreHandler(adp.UnclaimBot, cfg))
-	http.HandleFunc("/approve", coreHandler(adp.ApproveBot, cfg))
-	http.HandleFunc("/deny", coreHandler(adp.DenyBot, cfg))
-	http.HandleFunc("/data-request", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc("/claim", coreHandler(adp.ClaimBot, cfg))
+	r.HandleFunc("/unclaim", coreHandler(adp.UnclaimBot, cfg))
+	r.HandleFunc("/approve", coreHandler(adp.ApproveBot, cfg))
+	r.HandleFunc("/deny", coreHandler(adp.DenyBot, cfg))
+	r.HandleFunc("/data-request", func(w http.ResponseWriter, r *http.Request) {
 		if !authReq(r, cfg) {
 			w.WriteHeader(http.StatusUnauthorized)
 			w.Write([]byte("Unauthorized"))
@@ -207,7 +213,7 @@ func StartServer(adp types.ListAdapter) {
 		w.Write([]byte(botStr))
 	})
 
-	http.HandleFunc("/data-delete", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc("/data-delete", func(w http.ResponseWriter, r *http.Request) {
 		if !authReq(r, cfg) {
 			w.WriteHeader(http.StatusUnauthorized)
 			w.Write([]byte("Unauthorized"))
@@ -264,7 +270,7 @@ func StartServer(adp types.ListAdapter) {
 		log.Info("Integrase server now going to start listening on address ", cfg.BindAddr)
 	}
 
-	err := http.ListenAndServe(cfg.BindAddr, nil)
+	err := http.ListenAndServe(cfg.BindAddr, r)
 
 	if err != nil {
 		log.Error("Integrase server error: ", err)
