@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/MetroReviews/metro-integrase/types"
+	"github.com/gorilla/mux"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -151,14 +152,8 @@ func PatchList(cfg types.ListConfig, data types.ListPatch) (*types.ListPatchResp
 	}
 }
 
-type Router interface {
-	HandleFunc(path string, f func(http.ResponseWriter, *http.Request)) any
-	ListenAndServe(addr string, handler http.Handler) error
-	ServeHTTP(http.ResponseWriter, *http.Request)
-}
-
 // Starts a web server handling all core integrase functions
-func StartServer(adp types.ListAdapter, r Router) {
+func StartServer(adp types.ListAdapter, r *mux.Router) {
 	cfg := adp.GetConfig()
 
 	if cfg.StartupLogs {
