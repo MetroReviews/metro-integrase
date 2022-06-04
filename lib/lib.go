@@ -153,7 +153,7 @@ func PatchList(cfg types.ListConfig, data types.ListPatch) (*types.ListPatchResp
 }
 
 // Starts a web server handling all core integrase functions
-func StartServer(adp types.ListAdapter, r *mux.Router) {
+func StartServer(adp types.ListAdapter, r http.Handler) {
 	cfg := adp.GetConfig()
 
 	if cfg.StartupLogs {
