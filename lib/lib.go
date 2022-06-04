@@ -10,7 +10,7 @@ import (
 
 	"github.com/MetroReviews/metro-integrase/types"
 	"github.com/gorilla/mux"
-
+	"github.com/gorilla/handlers"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -45,8 +45,6 @@ func coreHandler(fn ListFunction, cfg types.ListConfig) func(w http.ResponseWrit
 			w.Write([]byte("Method not allowed"))
 			return
 		}
-
-		log.Info("Got request: ", r.URL.Path)
 
 		if !authReq(r, cfg) {
 			w.WriteHeader(http.StatusUnauthorized)
@@ -153,7 +151,7 @@ func PatchList(cfg types.ListConfig, data types.ListPatch) (*types.ListPatchResp
 }
 
 // Starts a web server handling all core integrase functions
-func StartServer(adp types.ListAdapter, r http.Handler) {
+func StartServer(adp types.ListAdapter, r *mux.Router) {
 	cfg := adp.GetConfig()
 
 	if cfg.StartupLogs {
@@ -264,6 +262,8 @@ func StartServer(adp types.ListAdapter, r http.Handler) {
 	if cfg.StartupLogs {
 		log.Info("Integrase server now going to start listening on address ", cfg.BindAddr)
 	}
+
+	r := handles.LoggingHandler(handlers.CompressHandler(r))
 
 	err := http.ListenAndServe(cfg.BindAddr, r)
 
