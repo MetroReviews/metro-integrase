@@ -6,11 +6,12 @@ import (
 	"errors"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/MetroReviews/metro-integrase/types"
-	"github.com/gorilla/mux"
 	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -263,9 +264,9 @@ func StartServer(adp types.ListAdapter, r *mux.Router) {
 		log.Info("Integrase server now going to start listening on address ", cfg.BindAddr)
 	}
 
-	r := handles.LoggingHandler(handlers.CompressHandler(r))
+	handledRouter := handlers.LoggingHandler(os.Stdout, handlers.CompressHandler(r))
 
-	err := http.ListenAndServe(cfg.BindAddr, r)
+	err := http.ListenAndServe(cfg.BindAddr, handledRouter)
 
 	if err != nil {
 		log.Error("Integrase server error: ", err)
