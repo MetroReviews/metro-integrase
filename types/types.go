@@ -18,7 +18,7 @@ type Bot struct {
 	ExtraOwners     []string `json:"extra_owners"`
 	ListSource      string   `json:"list_source"`
 	Reason          string   `json:"reason,omitempty"`
-	CrossAdd        *bool    `json:"cross_add,omitempty"` // In rare cases, this may not be set
+	CrossAdd        bool     `json:"cross_add,omitempty"` // In rare cases, this may not be set
 
 	// The following fields are optionally set
 	Website string `json:"website,omitempty"`
