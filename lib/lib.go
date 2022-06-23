@@ -254,13 +254,5 @@ func StartServer(adp types.ListAdapter, r *mux.Router) *mux.Router {
 		}
 	}
 
-	if cfg.BindAddr == "" {
-		cfg.BindAddr = ":8080"
-	}
-
-	if cfg.StartupLogs {
-		log.Info("Integrase server now going to start listening on address ", cfg.BindAddr)
-	}
-
 	return r
 }
