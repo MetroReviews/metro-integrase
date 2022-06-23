@@ -149,7 +149,7 @@ func PatchList(cfg types.ListConfig, data types.ListPatch) (*types.ListPatchResp
 }
 
 type router interface {
-	HandleFunc(path string, f func(http.ResponseWriter, *http.Request)) any
+	HandleFunc(path string, f func(http.ResponseWriter, *http.Request)) *any
 }
 
 // Starts a web server handling all core integrase functions
