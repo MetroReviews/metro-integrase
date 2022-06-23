@@ -264,7 +264,7 @@ func StartServer(adp types.ListAdapter, r *mux.Router) {
 		log.Info("Integrase server now going to start listening on address ", cfg.BindAddr)
 	}
 
-	handledRouter := handlers.LoggingHandler(os.Stdout, handlers.CompressHandler(r))
+	handledRouter := handlers.LoggingHandler(os.Stdout, r)
 
 	err := http.ListenAndServe(cfg.BindAddr, handledRouter)
 
