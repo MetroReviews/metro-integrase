@@ -12,22 +12,24 @@ type Bot struct {
 	Username        string   `json:"username"`
 	Description     string   `json:"description"`
 	LongDescription string   `json:"long_description"`
-	NSFW            bool     `json:"nsfw"`
-	Tags            []string `json:"tags"` // Auto set to []string{} if CrossAdd is false
 	Owner           string   `json:"owner"`
-	ExtraOwners     []string `json:"extra_owners"`
-	ListSource      string   `json:"list_source"`
-	Reason          string   `json:"reason,omitempty"`
-	CrossAdd        bool     `json:"cross_add,omitempty"` // In rare cases, this may not be set
-
+	
 	// The following fields are optionally set
-	Website string `json:"website,omitempty"`
-	Github  string `json:"github,omitempty"`
-	Support string `json:"support,omitempty"`
-	Donate  string `json:"donate,omitempty"`
-	Library string `json:"library,omitempty"`
-	Prefix  string `json:"prefix,omitempty"`
-	Invite  string `json:"invite,omitempty"`
+	Banner		string	 `json:"banner,omitempty"`
+	ExtraOwners     []string `json:"extra_owners,omitempty"` // Usually set
+	ListSource      string   `json:"list_source,omitempty"`  // Usually set
+	Reason          string   `json:"reason,omitempty"` // Usually set
+	CrossAdd        bool     `json:"cross_add,omitempty"` // In rare cases, this may not be set
+	Website 	string 	 `json:"website,omitempty"` // Usually set
+	Github  	string   `json:"github,omitempty"` // Usually set
+	Support 	string   `json:"support,omitempty"`
+	Donate  	string   `json:"donate,omitempty"`
+	Library 	string   `json:"library,omitempty"`
+	Prefix  	string   `json:"prefix,omitempty"`
+	Invite  	string   `json:"invite,omitempty"`
+	NSFW            bool     `json:"nsfw,omitempty"`
+	Tags            []string `json:"tags,omitempty"` // Auto set to []string{} if CrossAdd is false
+	ReviewNote	string	 `json:"review_note,omitempty"`
 }
 
 type ListPatch struct {
