@@ -162,8 +162,8 @@ func (m MuxWrap) HandleFunc(path string, f func(http.ResponseWriter, *http.Reque
 	m.Router.HandleFunc(path, f)
 }
 
-// Starts a web server handling all core integrase functions
-func StartServer(adp types.ListAdapter, r Router) {
+// Prepares a web server handling all core integrase functions
+func Prepare(adp types.ListAdapter, r Router) {
 	cfg := adp.GetConfig()
 
 	if cfg.StartupLogs {
@@ -265,5 +265,19 @@ func StartServer(adp types.ListAdapter, r Router) {
 		} else {
 			log.Info("Metro Reviews update successful with ", patched.HasUpdated, " updated")
 		}
+	}
+	
+	if cfg.StartupLogs {
+		log.Info(`Integrase prepared, now you need to run something like the below to start integrase:
+		
+integrase.StartServer(adp, integrase.MuxWrap{Router: r})
+
+// Add any middleware here (ex: logging middleware)
+log := handlers.LoggingHandler(os.Stdout, r)
+
+http.ListenAndServe("ADDRESS HERE", log)
+
+Don't like these logs? Disable StartupLogs
+		`)
 	}
 }
