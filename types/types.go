@@ -63,8 +63,6 @@ type ListConfig struct {
 	ListID string
 	// Secret Key (required)
 	SecretKey string
-	// Which IP/Port to bind to
-	BindAddr string
 	// Domain name (optional, if not specified, auto-registration will be disabled)
 	DomainName string
 }
