@@ -57,8 +57,6 @@ type ListPatchResp struct {
 type ListConfig struct {
 	// Logs on startup
 	StartupLogs bool
-	// Logs for requests
-	RequestLogs bool
 	// List ID (required)
 	ListID string
 	// Secret Key (required)

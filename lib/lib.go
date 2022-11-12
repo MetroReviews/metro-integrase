@@ -4,13 +4,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"time"
 
 	"github.com/MetroReviews/metro-integrase/types"
 	"github.com/gorilla/mux"
-	log "github.com/sirupsen/logrus"
 )
 
 /*
@@ -19,16 +19,10 @@ import (
 
 func authReq(r *http.Request, cfg types.ListConfig) bool {
 	if r == nil {
-		if cfg.RequestLogs {
-			log.Error("Request is nil")
-		}
 		return false
 	}
 
 	if r.Header.Get("Authorization") == "" || r.Header.Get("Authorization") != cfg.SecretKey {
-		if cfg.RequestLogs {
-			log.Error("Authorization header is missing or invalid")
-		}
 		return false
 	}
 
@@ -48,18 +42,14 @@ func coreHandler(fn ListFunction, cfg types.ListConfig) func(w http.ResponseWrit
 		if !authReq(r, cfg) {
 			w.WriteHeader(http.StatusUnauthorized)
 			w.Write([]byte("Unauthorized"))
-			log.Warning("Unauthorized request: ", r.URL.Path)
 			return
 		}
 
 		body, err := ioutil.ReadAll(r.Body)
 
 		if err != nil {
-			if cfg.RequestLogs {
-				log.Error(err, " at URL ", r.URL.Path)
-			}
 			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte("Bad Request. See logs for more information if you have them enabled:"))
+			w.Write([]byte("Bad Request: " + err.Error()))
 			return
 		}
 
@@ -67,11 +57,8 @@ func coreHandler(fn ListFunction, cfg types.ListConfig) func(w http.ResponseWrit
 		err = json.Unmarshal(body, &bot)
 
 		if err != nil {
-			if cfg.RequestLogs {
-				log.Error(err, " at URL ", r.URL.Path)
-			}
 			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte("Serialization error occured. See logs for more information if you have them enabled"))
+			w.Write([]byte("Serialization error occured: " + err.Error()))
 			return
 		}
 
@@ -92,8 +79,7 @@ func coreHandler(fn ListFunction, cfg types.ListConfig) func(w http.ResponseWrit
 func PatchList(cfg types.ListConfig, data types.ListPatch) (*types.ListPatchResp, error) {
 	payload, err := json.Marshal(data)
 
-	if err != nil && cfg.RequestLogs {
-		log.Error("PatchList error:", err)
+	if err != nil {
 		return nil, err
 	}
 
@@ -101,8 +87,7 @@ func PatchList(cfg types.ListConfig, data types.ListPatch) (*types.ListPatchResp
 
 	req, err := http.NewRequest("PATCH", types.APIUrl+"/lists/"+cfg.ListID, bytes.NewBuffer(payload))
 
-	if err != nil && cfg.RequestLogs {
-		log.Error("PatchList error (in making new request):", err)
+	if err != nil {
 		return nil, err
 	}
 
@@ -111,7 +96,6 @@ func PatchList(cfg types.ListConfig, data types.ListPatch) (*types.ListPatchResp
 
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Error("PatchList error (in performing new request):", err)
 		return nil, err
 	}
 
@@ -123,14 +107,12 @@ func PatchList(cfg types.ListConfig, data types.ListPatch) (*types.ListPatchResp
 		body, err := ioutil.ReadAll(resp.Body)
 
 		if err != nil {
-			log.Error("PatchList error (in reading response body):", err)
 			return nil, err
 		}
 
 		err = json.Unmarshal(body, &respData)
 
 		if err != nil {
-			log.Error("PatchList error (in unmarshalling response body):", err)
 			return nil, err
 		}
 
@@ -141,7 +123,6 @@ func PatchList(cfg types.ListConfig, data types.ListPatch) (*types.ListPatchResp
 		body, err := ioutil.ReadAll(resp.Body)
 
 		if err != nil {
-			log.Error("PatchList error (in reading response body):", err)
 			return nil, err
 		}
 
@@ -167,7 +148,7 @@ func Prepare(adp types.ListAdapter, r Router) {
 	cfg := adp.GetConfig()
 
 	if cfg.StartupLogs {
-		log.Info("Starting integrase server")
+		fmt.Println("Starting integrase server")
 	}
 
 	if cfg.ListID == "" {
@@ -206,11 +187,8 @@ func Prepare(adp types.ListAdapter, r Router) {
 		botStr, err := json.Marshal(bot)
 
 		if err != nil {
-			if cfg.RequestLogs {
-				log.Error(err)
-			}
 			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte("Serialization error occured. See logs for more information if you have them enabled"))
+			w.Write([]byte("Serialization error occured: " + err.Error()))
 			return
 		}
 
@@ -247,7 +225,7 @@ func Prepare(adp types.ListAdapter, r Router) {
 
 	if cfg.DomainName != "" {
 		if cfg.StartupLogs {
-			log.Info("Updating Metro Reviews with new routes")
+			fmt.Println("Updating Metro Reviews with new routes")
 		}
 
 		patched, err := PatchList(cfg, types.ListPatch{
@@ -259,11 +237,12 @@ func Prepare(adp types.ListAdapter, r Router) {
 			DataDeletionAPI: cfg.DomainName + "/data-delete",
 		})
 
-		if err != nil {
-			log.Error("Metro Reviews update failed: ", err)
-
-		} else {
-			log.Info("Metro Reviews update successful with ", patched.HasUpdated, " updated")
+		if cfg.StartupLogs {
+			if err != nil {
+				fmt.Println("Metro Reviews update failed: ", err)
+			} else {
+				fmt.Println("Metro Reviews update successful with ", patched.HasUpdated, " updated")
+			}
 		}
 	}
 	
