@@ -245,9 +245,9 @@ func Prepare(adp types.ListAdapter, r Router) {
 			}
 		}
 	}
-	
+
 	if cfg.StartupLogs {
-		log.Info(`Integrase prepared, now you need to run something like the below to start integrase:
+		fmt.Println(`Integrase prepared, now you need to run something like the below to start integrase:
 		
 // Add any middleware here (ex: logging middleware)
 log := handlers.LoggingHandler(os.Stdout, r)
