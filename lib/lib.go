@@ -158,12 +158,10 @@ func Prepare(adp types.ListAdapter, r Router) {
 		}
 
 		patched, err := PatchList(cfg, types.ListPatch{
-			ClaimBotAPI:     cfg.DomainName + "/claim",
-			UnclaimBotAPI:   cfg.DomainName + "/unclaim",
-			ApproveBotAPI:   cfg.DomainName + "/approve",
-			DenyBotAPI:      cfg.DomainName + "/deny",
-			DataRequestAPI:  cfg.DomainName + "/data-request",
-			DataDeletionAPI: cfg.DomainName + "/data-delete",
+			ClaimBotAPI:   cfg.DomainName + "/claim",
+			UnclaimBotAPI: cfg.DomainName + "/unclaim",
+			ApproveBotAPI: cfg.DomainName + "/approve",
+			DenyBotAPI:    cfg.DomainName + "/deny",
 		})
 
 		if cfg.StartupLogs {

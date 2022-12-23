@@ -124,8 +124,4 @@ type ListAdapter interface {
 	ApproveBot(bot *Bot) error
 	// Calling deny bot should deny the bot if it is present but not add the bot if not
 	DenyBot(bot *Bot) error
-	// Upcoming: calling data deletion request should delete the bot and all associated information
-	DataDelete(id string) error
-	// Upcoming: calling data request should return the bot and all associated information as a map
-	DataRequest(id string) (map[string]interface{}, error)
 }
