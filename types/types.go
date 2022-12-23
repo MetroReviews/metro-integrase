@@ -1,5 +1,13 @@
 package types
 
+import (
+	"encoding/json"
+	"errors"
+	"io"
+	"net/http"
+	"time"
+)
+
 /* Package `types` provides the interfaces that all bot lists wishing to use the official integrase  (integration code)
  * should follow
  */
@@ -7,6 +15,51 @@ package types
 const APIUrl = "https://catnip.metrobots.xyz"
 
 type Bot struct {
+	BotID    string `json:"bot_id"`
+	CanAdd   bool   `json:"can_add"`
+	Reviewer string `json:"reviewer"`
+	Reason   string `json:"reason"`
+}
+
+func (b Bot) Resolve() (*FullBot, error) {
+	req, err := http.NewRequest("GET", "https://catnip.metrobots.xyz"+b.BotID, nil)
+
+	if err != nil {
+		return nil, err
+	}
+
+	client := http.Client{Timeout: 5 * time.Second}
+
+	res, err := client.Do(req)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if res.StatusCode == http.StatusNotFound {
+		return nil, errors.New("not found")
+	}
+
+	defer res.Body.Close()
+
+	bytes, err := io.ReadAll(res.Body)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var bot FullBot
+
+	err = json.Unmarshal(bytes, &bot)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &bot, nil
+}
+
+type FullBot struct {
 	BotID           string `json:"bot_id"`
 	Reviewer        string `json:"reviewer"`
 	Username        string `json:"username"`
@@ -18,17 +71,15 @@ type Bot struct {
 	Banner      string   `json:"banner,omitempty"`
 	ExtraOwners []string `json:"extra_owners,omitempty"` // Usually set
 	ListSource  string   `json:"list_source,omitempty"`  // Usually set
-	Reason      string   `json:"reason,omitempty"`       // Usually set
 	CrossAdd    bool     `json:"cross_add,omitempty"`    // In rare cases, this may not be set
 	Website     string   `json:"website,omitempty"`      // Usually set
-	Github      string   `json:"github,omitempty"`       // Usually set
 	Support     string   `json:"support,omitempty"`
 	Donate      string   `json:"donate,omitempty"`
 	Library     string   `json:"library,omitempty"`
 	Prefix      string   `json:"prefix,omitempty"`
 	Invite      string   `json:"invite,omitempty"`
 	NSFW        bool     `json:"nsfw,omitempty"`
-	Tags        []string `json:"tags,omitempty"` // Auto set to []string{} if CrossAdd is false
+	Tags        []string `json:"tags,omitempty"`
 	ReviewNote  string   `json:"review_note,omitempty"`
 	Limited     bool     `json:"limited"`
 }
