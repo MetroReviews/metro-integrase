@@ -85,19 +85,15 @@ type FullBot struct {
 }
 
 type ListPatch struct {
-	Name          string `json:"name,omitempty"`
-	Description   string `json:"description,omitempty"`
-	Domain        string `json:"domain,omitempty"`
-	ClaimBotAPI   string `json:"claim_bot_api,omitempty"`
-	UnclaimBotAPI string `json:"unclaim_bot_api,omitempty"`
-	ApproveBotAPI string `json:"approve_bot_api,omitempty"`
-	DenyBotAPI    string `json:"deny_bot_api,omitempty"`
-	// Upcoming
-	DataRequestAPI string `json:"data_request_api,omitempty"`
-	// Upcoming
-	DataDeletionAPI string `json:"data_deletion_api,omitempty"`
-	ResetSecretKey  bool   `json:"reset_secret_key,omitempty"`
-	Icon            string `json:"icon,omitempty"`
+	Name           string `json:"name,omitempty"`
+	Description    string `json:"description,omitempty"`
+	Domain         string `json:"domain,omitempty"`
+	ClaimBotAPI    string `json:"claim_bot_api,omitempty"`
+	UnclaimBotAPI  string `json:"unclaim_bot_api,omitempty"`
+	ApproveBotAPI  string `json:"approve_bot_api,omitempty"`
+	DenyBotAPI     string `json:"deny_bot_api,omitempty"`
+	ResetSecretKey bool   `json:"reset_secret_key,omitempty"`
+	Icon           string `json:"icon,omitempty"`
 }
 
 type ListPatchResp struct {

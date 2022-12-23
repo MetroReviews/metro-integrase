@@ -151,67 +151,6 @@ func Prepare(adp types.ListAdapter, r Router) {
 	r.HandleFunc("/unclaim", coreHandler(adp.UnclaimBot, cfg))
 	r.HandleFunc("/approve", coreHandler(adp.ApproveBot, cfg))
 	r.HandleFunc("/deny", coreHandler(adp.DenyBot, cfg))
-	r.HandleFunc("/data-request", func(w http.ResponseWriter, r *http.Request) {
-		if !authReq(r, cfg) {
-			w.WriteHeader(http.StatusUnauthorized)
-			w.Write([]byte("Unauthorized"))
-			return
-		}
-
-		botId := r.URL.Query().Get("bot_id")
-
-		if botId == "" {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte("Bot ID is missing"))
-			return
-		}
-
-		bot, err := adp.DataRequest(botId)
-
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte("Request handle error:" + err.Error()))
-			return
-		}
-
-		botStr, err := json.Marshal(bot)
-
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte("Serialization error occured: " + err.Error()))
-			return
-		}
-
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(botStr))
-	})
-
-	r.HandleFunc("/data-delete", func(w http.ResponseWriter, r *http.Request) {
-		if !authReq(r, cfg) {
-			w.WriteHeader(http.StatusUnauthorized)
-			w.Write([]byte("Unauthorized"))
-			return
-		}
-
-		botId := r.URL.Query().Get("bot_id")
-
-		if botId == "" {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte("Bot ID is missing"))
-			return
-		}
-
-		err := adp.DataDelete(botId)
-
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte("Request handle error:" + err.Error()))
-			return
-		}
-
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("All associated data has been deleted from this list according to the lists adapter"))
-	})
 
 	if cfg.DomainName != "" {
 		if cfg.StartupLogs {
