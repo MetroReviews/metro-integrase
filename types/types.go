@@ -7,29 +7,30 @@ package types
 const APIUrl = "https://catnip.metrobots.xyz"
 
 type Bot struct {
-	BotID           string   `json:"bot_id"`
-	Reviewer        string   `json:"reviewer"`
-	Username        string   `json:"username"`
-	Description     string   `json:"description"`
-	LongDescription string   `json:"long_description"`
-	Owner           string   `json:"owner"`
-	
+	BotID           string `json:"bot_id"`
+	Reviewer        string `json:"reviewer"`
+	Username        string `json:"username"`
+	Description     string `json:"description"`
+	LongDescription string `json:"long_description"`
+	Owner           string `json:"owner"`
+
 	// The following fields are optionally set
-	Banner		string	 `json:"banner,omitempty"`
-	ExtraOwners     []string `json:"extra_owners,omitempty"` // Usually set
-	ListSource      string   `json:"list_source,omitempty"`  // Usually set
-	Reason          string   `json:"reason,omitempty"` // Usually set
-	CrossAdd        bool     `json:"cross_add,omitempty"` // In rare cases, this may not be set
-	Website 	string 	 `json:"website,omitempty"` // Usually set
-	Github  	string   `json:"github,omitempty"` // Usually set
-	Support 	string   `json:"support,omitempty"`
-	Donate  	string   `json:"donate,omitempty"`
-	Library 	string   `json:"library,omitempty"`
-	Prefix  	string   `json:"prefix,omitempty"`
-	Invite  	string   `json:"invite,omitempty"`
-	NSFW            bool     `json:"nsfw,omitempty"`
-	Tags            []string `json:"tags,omitempty"` // Auto set to []string{} if CrossAdd is false
-	ReviewNote	string	 `json:"review_note,omitempty"`
+	Banner      string   `json:"banner,omitempty"`
+	ExtraOwners []string `json:"extra_owners,omitempty"` // Usually set
+	ListSource  string   `json:"list_source,omitempty"`  // Usually set
+	Reason      string   `json:"reason,omitempty"`       // Usually set
+	CrossAdd    bool     `json:"cross_add,omitempty"`    // In rare cases, this may not be set
+	Website     string   `json:"website,omitempty"`      // Usually set
+	Github      string   `json:"github,omitempty"`       // Usually set
+	Support     string   `json:"support,omitempty"`
+	Donate      string   `json:"donate,omitempty"`
+	Library     string   `json:"library,omitempty"`
+	Prefix      string   `json:"prefix,omitempty"`
+	Invite      string   `json:"invite,omitempty"`
+	NSFW        bool     `json:"nsfw,omitempty"`
+	Tags        []string `json:"tags,omitempty"` // Auto set to []string{} if CrossAdd is false
+	ReviewNote  string   `json:"review_note,omitempty"`
+	Limited     bool     `json:"limited"`
 }
 
 type ListPatch struct {
