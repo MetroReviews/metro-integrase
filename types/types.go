@@ -22,7 +22,7 @@ type Bot struct {
 }
 
 func (b Bot) Resolve() (*FullBot, error) {
-	req, err := http.NewRequest("GET", "https://catnip.metrobots.xyz"+b.BotID, nil)
+	req, err := http.NewRequest("GET", APIUrl+"/bots/"+b.BotID, nil)
 
 	if err != nil {
 		return nil, err
